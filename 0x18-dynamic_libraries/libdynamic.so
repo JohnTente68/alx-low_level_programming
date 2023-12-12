@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <dlfcn.h>
+
+int main(void)
+{
+    void *handle;
+    int (*foo)(int, int);
+    char *error;
+
+    handle = dlopen("libdynamic.so", RTLD_LAZY);
+    if (!handle)
+    {
+        fprintf(stderr, "%s\n", dlerror());
+        return (1);
+    }
+
+    foo = dlsym(handle, "foo");
+    if ((error = dlerror()) != NULL)
+    {
+        fprintf(stderr, "%s\n", error);
+        return (1);
+    }
+
+    printf("%d\n", foo(2, 3));
+
+    dlclose(handle);
+    return (0);
+}
+
